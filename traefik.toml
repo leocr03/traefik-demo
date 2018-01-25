@@ -13,10 +13,7 @@ watch = true
   [frontends.http]
   backend = "backendA"
 
-[web]
-address = ":8080"
-
-[web.metrics.prometheus]
+[metrics.prometheus]
 
 [api]
   dashboard = true
