@@ -1,0 +1,43 @@
+version: "3"
+services:
+  traefik:
+    image: traefik
+    command: --web --web.metrics.prometheus --web.metrics.prometheus.buckets="0.1,0.3,1.2,5.0" --docker --docker.domain=docker.localhost --logLevel=DEBUG
+    networks:
+      - webgateway
+    ports:
+      - "80:80"
+      - "8080:8080"
+    depends_on:
+      - sampleapp
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.toml:/etc/traefik/traefik.toml
+  grafana:
+    image: grafana/grafana
+    ports:
+     - "3000:3000"
+    links:
+     - prometheus
+    networks:
+      - webgateway
+  prometheus:
+    image: prom/prometheus
+    links:
+      - traefik
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+      - "9100:9100"
+    networks:
+      - webgateway
+  sampleapp:
+    image: training/webapp
+    ports:
+     - "5000:5000"
+    networks:
+      - webgateway
+networks:
+  webgateway:
+    driver: bridge

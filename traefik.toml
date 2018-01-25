@@ -1,0 +1,25 @@
+logLevel = "DEBUG"
+
+[file]
+watch = true
+
+[backends]
+  [backends.backendA]
+    [backends.backendA.servers.server1]
+    url = "http://sampleapp:5000"
+    weight = 10
+
+[frontends]
+  [frontends.http]
+  backend = "backendA"
+
+[web]
+address = ":8080"
+
+[web.metrics.prometheus]
+
+[api]
+  dashboard = true
+  debug = false
+  [api.statistics]
+    recentErrors = 10
